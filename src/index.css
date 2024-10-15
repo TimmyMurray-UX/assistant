@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ensure the code block does not cause horizontal overflow */
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width */
+}
+
+code {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width */
+}
