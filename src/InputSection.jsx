@@ -54,6 +54,7 @@ const InputSection = forwardRef(
         onSendMessage(message);
         setUserInput(""); // Clear the input after sending
         setSelectedFiles([]); // Clear selected files after sending
+        setFileTexts({}); // Clear the fileTexts, which removes the text in <pre> tags
       }
     };
 
