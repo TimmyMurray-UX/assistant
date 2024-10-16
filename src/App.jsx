@@ -3,12 +3,18 @@ import MessagesSection from "./MessagesSection";
 import InputSection from "./InputSection";
 import InitialScreen from "./InitialScreen";
 import Header from "./Header";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf/pdf.worker.min.mjs`;
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [threadId, setThreadId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [fileTexts, setFileTexts] = useState({}); // State for text extracted from files
+  const [pendingPrompt, setPendingPrompt] = useState(null); // Store the pending prompt text
   const inputSectionRef = useRef(null); // Reference to the InputSection component
+  const fileInputRef = useRef(null); // Reference to trigger file picker in InputSection
 
   const agentId = document.body.getAttribute("agent-id");
 
@@ -72,8 +78,37 @@ function App() {
     }
   };
 
-  const hasFiles = () => {
-    return inputSectionRef.current ? inputSectionRef.current.hasFiles() : false;
+  const extractTextFromPDF = async (file) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        const typedarray = new Uint8Array(e.target.result);
+        const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+        let pdfText = "";
+
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+          const page = await pdf.getPage(pageNumber);
+          const textContent = await page.getTextContent();
+          const strings = textContent.items.map((item) => item.str);
+          pdfText += strings.join(" ") + "\n";
+        }
+
+        const fileId = `${file.name}_${file.lastModified}`;
+        setFileTexts((prevTexts) => ({
+          ...prevTexts,
+          [fileId]: pdfText,
+        }));
+
+        // Populate the InputSection with the pending prompt after file selection
+        if (pendingPrompt && inputSectionRef.current) {
+          inputSectionRef.current.setUserInput(pendingPrompt);
+          setPendingPrompt(null); // Clear the pending prompt
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } catch (error) {
+      console.error("Error extracting text from PDF:", error);
+    }
   };
 
   return (
@@ -81,19 +116,10 @@ function App() {
       <div className="flex flex-col w-full h-full bg-white shadow-lg rounded-lg overflow-hidden">
         {messages.length > 0 && <Header />}
         <div className="flex-grow overflow-auto p-6 sm:pl-0 pb-0 flex flex-col">
-          {/* Check if inputSectionRef is available before rendering InitialScreen */}
           {messages.length === 0 && inputSectionRef.current ? (
             <InitialScreen
-              onSendMessage={sendMessage}
-              hasFiles={hasFiles}
-              getCombinedMessage={inputSectionRef.current.getCombinedMessage}
-              loadingFiles={inputSectionRef.current.loadingFiles}
-              setUserInput={inputSectionRef.current.setUserInput}
-              triggerSend={inputSectionRef.current.triggerSend}
-              textareaRef={inputSectionRef.current.textareaRef}
-              adjustTextareaHeight={
-                inputSectionRef.current.adjustTextareaHeight
-              }
+              setPendingPrompt={setPendingPrompt} // Set the pending prompt for later
+              fileInputRef={fileInputRef} // Pass file input ref to trigger file picker
             />
           ) : (
             <MessagesSection
@@ -104,7 +130,14 @@ function App() {
           )}
         </div>
         {/* Always render InputSection */}
-        <InputSection ref={inputSectionRef} onSendMessage={sendMessage} />
+        <InputSection
+          ref={inputSectionRef}
+          fileInputRef={fileInputRef} // Pass file input ref to InputSection
+          onSendMessage={sendMessage}
+          extractTextFromPDF={extractTextFromPDF}
+          fileTexts={fileTexts}
+          setFileTexts={setFileTexts} // Pass setFileTexts to InputSection
+        />
       </div>
     </main>
   );

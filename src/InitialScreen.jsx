@@ -1,27 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
-function InitialScreen({
-  setUserInput,
-  hasFiles,
-  getCombinedMessage,
-  loadingFiles,
-  triggerSend,
-  textareaRef, // Pass the textarea ref to access the adjustTextareaHeight function
-  adjustTextareaHeight, // Pass the adjustTextareaHeight function to trigger resizing
-}) {
+function InitialScreen({ setPendingPrompt, fileInputRef }) {
   const handleExamplePrompt = (prompt) => {
-    if (hasFiles()) {
-      if (loadingFiles) {
-        alert("Please wait while the files are still being processed.");
-      } else {
-        const combinedMessage = getCombinedMessage(prompt).trim(); // Ensure the message is trimmed
-        setUserInput(combinedMessage); // Set the combined message in the input field
-        adjustTextareaHeight(); // Trigger textarea resizing after setting the input value
-        triggerSend(); // Trigger the send action
-      }
-    } else {
-      alert("Please attach a file before using this action.");
-    }
+    setPendingPrompt(prompt); // Set the prompt, but don't populate the input yet
+    fileInputRef.current.click(); // Programmatically trigger the file picker
   };
 
   return (
@@ -51,7 +33,7 @@ function InitialScreen({
           className="bg-gray-700 text-white rounded-full px-4 py-2 hover:bg-gray-600"
           onClick={() =>
             handleExamplePrompt(
-              "Taking into account the agreement_metadata.json, match the DUA file with the appropriate JSON entry, and extract the 'Days Submit to Active', and any other start and end date fields"
+              "Taking into account the agreement_metadata.json, match the DUA file with the appropriate JSON entry, and extract the 'Days Submit to Active', and any other start and end date fields."
             )
           }
         >
