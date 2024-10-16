@@ -63,13 +63,34 @@ const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
               onChange={handleFileSelect}
               accept="application/pdf"
             />
-            <div className="bg-gray-700 text-white rounded-full py-2 text-center cursor-pointer hover:bg-gray-600">
+            <div className="bg-gray-700 text-white mb-6 rounded-full py-2 text-center cursor-pointer hover:bg-gray-600">
               <span className="flex justify-center items-center space-x-2">
                 <ComputerDesktopIcon className="h-5 w-5 text-white" />{" "}
-                <span>Browse files</span>
+                <span>Browse files on Desktop</span>
               </span>
             </div>
           </label>
+          <hr />
+          <button
+            disabled
+            className="bg-gray-200 text-gray-800 mt-6 py-2 text-center cursor-pointer hover:bg-gray-100 hover:text-black w-full"
+          >
+            <span className="flex justify-center items-center space-x-2">
+              <CloudArrowUpIcon className="h-5 w-5 text-gray-800 hover:text-black" />{" "}
+              <span>Add file from Google Drive</span>
+            </span>
+          </button>
+
+          {/* OneDrive Button */}
+          <button
+            disabled
+            className="bg-gray-200 text-gray-800 mt-6 py-2 text-center cursor-pointer hover:bg-gray-100 hover:text-black w-full"
+          >
+            <span className="flex justify-center items-center space-x-2">
+              <CloudArrowUpIcon className="h-5 w-5 text-gray-800 hover:text-black" />{" "}
+              <span>Add file from OneDrive</span>
+            </span>
+          </button>
 
           <button
             onClick={onClose}
