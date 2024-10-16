@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { ComputerDesktopIcon } from "@heroicons/react/24/outline"; // Import the needed icons
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import {
+  ComputerDesktopIcon,
+  CloudArrowUpIcon,
+} from "@heroicons/react/24/outline"; // Import the needed icons
 
 const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
   const [dragOver, setDragOver] = useState(false);
@@ -32,8 +34,14 @@ const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div
+        className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50"
+        onClick={onClose} // Close modal when overlay is clicked
+      >
+        <div
+          className="bg-white p-6 rounded-lg shadow-lg w-96"
+          onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside the modal
+        >
           <div
             className={`border-2 border-dashed p-6 mb-4 flex flex-col justify-center items-center ${
               dragOver ? "border-blue-500" : "border-gray-400"
@@ -57,7 +65,6 @@ const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
             <div className="bg-gray-700 text-white rounded-full py-2 text-center cursor-pointer hover:bg-gray-600">
               <span className="flex justify-center items-center space-x-2">
                 <ComputerDesktopIcon className="h-5 w-5 text-white" />{" "}
-                {/* ComputerDesktopIcon here */}
                 <span>Browse files</span>
               </span>
             </div>
