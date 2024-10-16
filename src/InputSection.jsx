@@ -18,7 +18,6 @@ const InputSection = forwardRef(
   ) => {
     const [userInput, setUserInput] = useState("");
     const [selectedFiles, setSelectedFiles] = useState([]); // State for managing selected files
-    const [loadingFiles, setLoadingFiles] = useState(false); // State for loading indicator
     const textareaRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
@@ -75,16 +74,18 @@ const InputSection = forwardRef(
     return (
       <div className="p-4">
         <div className="flex flex-col items-center max-w-3xl mx-auto relative w-full">
-          <div className="flex flex-col items-start w-full relative p-2 rounded-3xl shadow-sm bg-gray-100 text-black">
+          <div className="flex flex-col items-start w-full relative rounded-3xl shadow-sm bg-gray-100 text-black">
             {/* Display fileTexts in the <pre> tag */}
             {Object.values(fileTexts).length > 0 && (
-              <pre className="w-full bg-gray-200 p-4 rounded-md mb-4 overflow-auto max-h-64 whitespace-pre-wrap">
-                {Object.values(fileTexts).join("\n")}
-              </pre>
+              <div className="p-2">
+                <pre className="w-full bg-gray-200 p-4 rounded-3xl mb-4 overflow-auto max-h-64 whitespace-pre-wrap">
+                  {Object.values(fileTexts).join("\n")}
+                </pre>
+              </div>
             )}
 
             {selectedFiles.length > 0 && (
-              <div className="flex space-x-2 mb-2 overflow-x-auto w-full">
+              <div className="flex space-x-2 mb-2 overflow-x-auto p-2 w-full">
                 {selectedFiles.map((file, index) => (
                   <div
                     key={index}
@@ -102,7 +103,7 @@ const InputSection = forwardRef(
               </div>
             )}
 
-            <div className="flex items-end space-x-2 bg-gray-100 rounded-lg p-0 w-full">
+            <div className="flex items-end space-x-2 bg-gray-100 rounded-full p-0 w-full">
               {/* Paperclip icon for attaching files */}
               <div className="flex items-center p-2">
                 <label
@@ -130,9 +131,14 @@ const InputSection = forwardRef(
               <div className="flex items-center p-2">
                 <button
                   onClick={handleSend}
-                  className={`p-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400`}
+                  className={`p-2 bg-gray-700 text-white rounded-full hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 ${
+                    userInput.trim() === ""
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
                   aria-label="Send Message"
                   title="Send Message"
+                  disabled={userInput.trim() === ""} // Disable when there is no text
                 >
                   <PaperAirplaneIcon className="h-5 w-5" aria-hidden="true" />
                 </button>
