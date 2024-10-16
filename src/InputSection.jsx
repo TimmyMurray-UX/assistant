@@ -126,9 +126,16 @@ const InputSection = forwardRef(({ onSendMessage }, ref) => {
   };
 
   const removeFile = (fileToRemove) => {
-    setSelectedFiles((prevFiles) =>
-      prevFiles.filter((file) => file !== fileToRemove)
-    );
+    setSelectedFiles((prevFiles) => {
+      const updatedFiles = prevFiles.filter((file) => file !== fileToRemove);
+
+      // If no files are left after removal, clear the user input
+      if (updatedFiles.length === 0) {
+        setUserInput("");
+      }
+
+      return updatedFiles;
+    });
 
     setFileTexts((prevTexts) => {
       const newTexts = { ...prevTexts };
