@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ComputerDesktopIcon } from "@heroicons/react/24/outline"; // Import the needed icons
+import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
 
 const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
   const [dragOver, setDragOver] = useState(false);
@@ -32,34 +34,40 @@ const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
     isOpen && (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-          <h2 className="text-xl font-bold mb-4 text-center">Upload a File</h2>
           <div
-            className={`border-2 border-dashed ${
+            className={`border-2 border-dashed p-6 mb-4 flex flex-col justify-center items-center ${
               dragOver ? "border-blue-500" : "border-gray-400"
-            } p-6 mb-4 flex justify-center items-center text-gray-500`}
+            }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            style={{ height: "150px" }}
           >
-            <p className="text-center">
-              Drag your file here or{" "}
-              <label className="text-blue-500 cursor-pointer">
-                browse
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileSelect}
-                  accept="application/pdf"
-                />
-              </label>{" "}
-              from your computer.
-            </p>
+            <CloudArrowUpIcon className="h-10 w-10 text-blue-500 mb-4" />
+            <p className="text-center text-gray-500">Drag and drop</p>
           </div>
+
+          <label className="block">
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleFileSelect}
+              accept="application/pdf"
+            />
+            <div className="bg-gray-700 text-white rounded-full py-2 text-center cursor-pointer hover:bg-gray-600">
+              <span className="flex justify-center items-center space-x-2">
+                <ComputerDesktopIcon className="h-5 w-5 text-white" />{" "}
+                {/* ComputerDesktopIcon here */}
+                <span>Browse files</span>
+              </span>
+            </div>
+          </label>
+
           <button
             onClick={onClose}
-            className="bg-red-500 text-white rounded-full px-4 py-2 w-full hover:bg-red-600"
+            className="mt-4 text-center text-blue-500 underline w-full"
           >
-            Close
+            Cancel
           </button>
         </div>
       </div>
