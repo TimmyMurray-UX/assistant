@@ -5,20 +5,20 @@ import {
 } from "@heroicons/react/24/outline"; // Import the needed icons
 
 const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
-  const [dragOver, setDragOver] = useState(false);
+  const [dragOver, setDragOver] = useState(false); // Track whether file is being dragged over the region
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    setDragOver(true);
+    setDragOver(true); // Set dragOver to true when the file is being dragged over
   };
 
   const handleDragLeave = () => {
-    setDragOver(false);
+    setDragOver(false); // Set dragOver to false when the file leaves the drag area
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    setDragOver(false);
+    setDragOver(false); // Reset dragOver when the file is dropped
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       onFileUpload(files);
@@ -42,10 +42,11 @@ const FileUploadModal = ({ isOpen, onClose, onFileUpload }) => {
           className="bg-white p-6 rounded-lg shadow-lg w-96"
           onClick={(e) => e.stopPropagation()} // Prevent closing modal when clicking inside the modal
         >
+          {/* Drag-and-drop area is hidden on mobile but visible on larger screens */}
           <div
             className={`border-2 border-dashed p-6 mb-4 flex flex-col justify-center items-center ${
-              dragOver ? "border-blue-500" : "border-gray-400"
-            }`}
+              dragOver ? "border-blue-500 bg-blue-100" : "border-gray-400"
+            } hover:border-blue-400 transition-all duration-300 hidden sm:flex`} // Hidden on mobile and hover state added
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
