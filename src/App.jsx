@@ -3,6 +3,7 @@ import MessagesSection from "./MessagesSection";
 import InputSection from "./InputSection";
 import InitialScreen from "./InitialScreen";
 import Header from "./Header";
+import FileUploadModal from "./FileUploadModal"; // Import the modal
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf/pdf.worker.min.mjs`;
@@ -13,6 +14,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [fileTexts, setFileTexts] = useState({}); // State for text extracted from files
   const [pendingPrompt, setPendingPrompt] = useState(null); // Store the pending prompt text
+  const [isModalOpen, setIsModalOpen] = useState(false); // Track the modal state
   const inputSectionRef = useRef(null); // Reference to the InputSection component
   const fileInputRef = useRef(null); // Reference to trigger file picker in InputSection
 
@@ -111,6 +113,16 @@ function App() {
     }
   };
 
+  // Function to handle file uploads from the modal
+  const handleFileUpload = (files) => {
+    setIsModalOpen(false); // Close the modal
+    if (files && files.length > 0) {
+      const file = files[0]; // Only handling single file for simplicity
+      extractTextFromPDF(file);
+      inputSectionRef.current.addUploadedFile(file); // Add the file to InputSection
+    }
+  };
+
   return (
     <main className="flex justify-center items-center h-screen bg-gray-100">
       <div className="flex flex-col w-full h-full bg-white shadow-lg rounded-lg overflow-hidden">
@@ -120,6 +132,7 @@ function App() {
             <InitialScreen
               setPendingPrompt={setPendingPrompt} // Set the pending prompt for later
               fileInputRef={fileInputRef} // Pass file input ref to trigger file picker
+              openModal={() => setIsModalOpen(true)} // Open the modal
             />
           ) : (
             <MessagesSection
@@ -137,8 +150,16 @@ function App() {
           extractTextFromPDF={extractTextFromPDF}
           fileTexts={fileTexts}
           setFileTexts={setFileTexts} // Pass setFileTexts to InputSection
+          openModal={() => setIsModalOpen(true)} // Open the modal
         />
       </div>
+
+      {/* Render the FileUploadModal */}
+      <FileUploadModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Close modal
+        onFileUpload={handleFileUpload} // Handle file upload
+      />
     </main>
   );
 }

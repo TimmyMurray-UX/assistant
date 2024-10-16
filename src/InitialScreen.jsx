@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-function InitialScreen({ setPendingPrompt, fileInputRef }) {
+function InitialScreen({ setPendingPrompt, openModal }) {
   const handleExamplePrompt = (prompt) => {
     setPendingPrompt(prompt); // Set the prompt, but don't populate the input yet
-    fileInputRef.current.click(); // Programmatically trigger the file picker
+    openModal(); // Open the file upload modal
   };
 
   return (

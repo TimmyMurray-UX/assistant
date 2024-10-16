@@ -13,13 +13,7 @@ import {
 
 const InputSection = forwardRef(
   (
-    {
-      onSendMessage,
-      fileTexts,
-      setFileTexts,
-      extractTextFromPDF,
-      fileInputRef,
-    },
+    { onSendMessage, fileTexts, setFileTexts, extractTextFromPDF, openModal },
     ref
   ) => {
     const [userInput, setUserInput] = useState("");
@@ -29,6 +23,10 @@ const InputSection = forwardRef(
 
     useImperativeHandle(ref, () => ({
       setUserInput,
+      // Add uploaded file to the selected files
+      addUploadedFile: (file) => {
+        setSelectedFiles((prevFiles) => [...prevFiles, file]); // Add new file to the selectedFiles array
+      },
     }));
 
     const handleInputChange = (e) => {
@@ -55,41 +53,18 @@ const InputSection = forwardRef(
       if (message.trim()) {
         onSendMessage(message);
         setUserInput(""); // Clear the input after sending
-      }
-    };
-
-    const handleFileChange = async (event) => {
-      const files = Array.from(event.target.files);
-
-      if (files.length > 0) {
-        setLoadingFiles(true);
-        setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-
-        for (const file of files) {
-          if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
-            await extractTextFromPDF(file); // Call the function passed from App.jsx
-          } else {
-            console.warn("Unsupported file type:", file.type);
-          }
-        }
-
-        setLoadingFiles(false);
-        event.target.value = null; // Clear the file input after processing
+        setSelectedFiles([]); // Clear selected files after sending
       }
     };
 
     const removeFile = (fileToRemove) => {
-      // First, update the local selectedFiles state
       setSelectedFiles((prevFiles) => {
         const updatedFiles = prevFiles.filter((file) => file !== fileToRemove);
 
-        // If no files remain, clear the input and fileTexts
+        // Clear text input and fileTexts when no files are left
         if (updatedFiles.length === 0) {
           setUserInput(""); // Clear the text box
-          setTimeout(() => {
-            // Use setTimeout to prevent state updates during render
-            setFileTexts({}); // Clear the fileTexts that display in <pre>
-          }, 0);
+          setFileTexts({}); // Clear the fileTexts that display in <pre>
         }
 
         return updatedFiles;
@@ -129,17 +104,12 @@ const InputSection = forwardRef(
             <div className="flex items-end space-x-2 bg-gray-100 rounded-lg p-0 w-full">
               {/* Paperclip icon for attaching files */}
               <div className="flex items-center p-2">
-                <label htmlFor="file-upload" className="cursor-pointer">
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer"
+                  onClick={openModal}
+                >
                   <PaperClipIcon className="h-8 w-8 text-black hover:text-gray-400" />
-                  <input
-                    id="file-upload"
-                    ref={fileInputRef} // Bind the ref here
-                    type="file"
-                    multiple
-                    onChange={handleFileChange}
-                    className="sr-only"
-                    accept="application/pdf"
-                  />
                 </label>
               </div>
 
@@ -169,6 +139,21 @@ const InputSection = forwardRef(
             </div>
           </div>
         </div>
+
+        {/* Footer section */}
+        <footer className="p-4 text-center text-xs text-gray-500">
+          <a href="#" target="_blank" rel="noreferrer">
+            Digital Accessibility
+          </a>{" "}
+          |{" "}
+          <a href="#" target="_blank" rel="noreferrer">
+            Privacy
+          </a>{" "}
+          |{" "}
+          <a href="#" target="_blank" rel="noreferrer">
+            Help
+          </a>
+        </footer>
       </div>
     );
   }
