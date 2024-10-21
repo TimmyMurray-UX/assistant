@@ -4,12 +4,14 @@ import React, {
   forwardRef,
   useRef,
   useLayoutEffect,
+  useEffect,
 } from "react";
 import {
   PaperAirplaneIcon,
   PaperClipIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
+import FileUploadModal from "./FileUploadModal"; // Import the FileUploadModal component
 
 const InputSection = forwardRef(
   (
@@ -18,6 +20,7 @@ const InputSection = forwardRef(
   ) => {
     const [userInput, setUserInput] = useState("");
     const [selectedFiles, setSelectedFiles] = useState([]); // State for managing selected files
+    const [isModalOpen, setIsModalOpen] = useState(false); // Track modal open state
     const textareaRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
@@ -64,6 +67,13 @@ const InputSection = forwardRef(
       }
     };
 
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault(); // Prevent new line being added on Enter
+        handleSend(); // Send message on Enter
+      }
+    };
+
     const removeFile = (fileToRemove) => {
       setSelectedFiles((prevFiles) => {
         const updatedFiles = prevFiles.filter((file) => file !== fileToRemove);
@@ -77,6 +87,20 @@ const InputSection = forwardRef(
         return updatedFiles;
       });
     };
+
+    // Define the handleFileUpload function to handle file uploads from the modal
+    const handleFileUpload = (files) => {
+      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+      setIsModalOpen(false); // Close the modal after file upload
+      textareaRef.current?.focus(); // Move focus to input box after modal closes
+    };
+
+    // Automatically move focus to the input box when the <pre> tag (fileTexts) is not empty
+    useEffect(() => {
+      if (Object.values(fileTexts).length > 0 && textareaRef.current) {
+        textareaRef.current.focus(); // Move focus to the input box
+      }
+    }, [fileTexts]);
 
     return (
       <div className="p-4" role="form" aria-label="Input Section">
@@ -129,7 +153,7 @@ const InputSection = forwardRef(
               <div className="flex items-center p-2">
                 <button
                   className="focus:outline-none focus:ring-2 focus:ring-gray-400 p-1 rounded-full"
-                  onClick={openModal}
+                  onClick={() => setIsModalOpen(true)} // Open the modal
                   aria-label="Attach file"
                   title="Attach file"
                 >
@@ -147,6 +171,7 @@ const InputSection = forwardRef(
                   className="bg-transparent flex-grow outline-none w-full resize-none overflow-hidden h-auto max-h-32 p-2 leading-relaxed"
                   value={userInput}
                   onChange={handleInputChange}
+                  onKeyDown={handleKeyDown} // Capture Enter key press
                   placeholder="Type a message..."
                   rows={1}
                   aria-label="Message input"
@@ -172,6 +197,14 @@ const InputSection = forwardRef(
             </div>
           </div>
         </div>
+
+        {/* File Upload Modal */}
+        <FileUploadModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onFileUpload={handleFileUpload} // Use handleFileUpload here
+          inputBoxRef={textareaRef} // Pass the input box ref to move focus after file upload
+        />
 
         {/* Footer section */}
         <footer className="p-4 text-center text-xs text-gray-500">
