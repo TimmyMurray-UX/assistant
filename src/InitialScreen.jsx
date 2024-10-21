@@ -28,36 +28,24 @@ function InitialScreen({ setPendingPrompt, openModal }) {
       <div className="space-y-2 space-x-2">
         <button
           className="bg-gray-700 text-white rounded-full px-4 py-2 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          onClick={() =>
-            handleExamplePrompt(
-              "Describe this document's key points in bullet points, and provide a one paragraph worded summary of the document in a separate section."
-            )
-          }
-          aria-label="Summarize DUA document"
+          onClick={() => handleExamplePrompt("Perform Task 1")}
+          aria-label="Task 1"
         >
-          Summarize DUA
+          Task 1
         </button>
         <button
           className="bg-gray-700 text-white rounded-full px-4 py-2 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          onClick={() =>
-            handleExamplePrompt(
-              "Taking into account the agreement_metadata.json, match the DUA file with the appropriate JSON entry, and extract the 'Days Submit to Active', and any other start and end date fields."
-            )
-          }
-          aria-label="Extract DUA metadata"
+          onClick={() => handleExamplePrompt("Perform Task 2")}
+          aria-label="Task 2"
         >
-          DUA Estimated Time
+          Task 2
         </button>
         <button
           className="bg-gray-700 text-white rounded-full px-4 py-2 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          onClick={() =>
-            handleExamplePrompt(
-              "What has changed in the DUA between the document I am providing as part of the context and the file(s) available in your storage? Pull out the information into sections and BOLD anything that has been added or removed."
-            )
-          }
-          aria-label="Redline changes in DUA"
+          onClick={() => handleExamplePrompt("Perform Task 3")}
+          aria-label="Task 3"
         >
-          Redline
+          Task 3
         </button>
       </div>
     </div>
