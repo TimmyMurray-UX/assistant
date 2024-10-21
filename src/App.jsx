@@ -90,21 +90,21 @@ function App() {
   };
 
   const handleSendMessage = async (message) => {
-    const { fullMessage, displayMessage, fileName } = message;
+    const { fullMessage, displayMessage, fileName, fileContent } = message;
 
-    // Add only the displayMessage (user's prompt) and file name to the messages array
+    // Add the displayMessage, fileName, and fileContent to the messages array
     setMessages((prev) => [
       ...prev,
-      { role: "user", content: displayMessage, fileName },
+      { role: "user", content: displayMessage, fileName, fileContent },
     ]);
 
     // Send the full message (PDF + prompt) to the OpenAI API
     try {
-      const response = await sendMessage(fullMessage); // Sending the full message to API
+      const response = await sendMessage(fullMessage);
 
       if (!response) {
         console.error("No valid response from API");
-        return; // Exit if there was an error
+        return;
       }
 
       // Add the assistant's response to the message list

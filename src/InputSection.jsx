@@ -55,11 +55,12 @@ const InputSection = forwardRef(
       const fileName = selectedFiles.length > 0 ? selectedFiles[0].name : null; // Get the file name
 
       if (messageToSend.trim()) {
-        // Pass the full message and file name to be sent to the API, but the promptMessage to display in the MessagesSection
+        // Pass the full message, display message, file name, and file content
         onSendMessage({
           fullMessage: messageToSend,
           displayMessage: promptMessage,
           fileName,
+          fileContent: combinedFileText,
         });
         setUserInput(""); // Clear the input after sending
         setSelectedFiles([]); // Clear selected files
