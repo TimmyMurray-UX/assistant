@@ -49,12 +49,14 @@ const InputSection = forwardRef(
       const combinedFileText = Object.values(fileTexts).join("\n"); // PDF text
       const messageToSend = combinedFileText + userInput; // Full message with PDF + prompt text
       const promptMessage = userInput; // Only the prompt text
+      const fileName = selectedFiles.length > 0 ? selectedFiles[0].name : null; // Get the file name
 
       if (messageToSend.trim()) {
-        // Pass the full message to be sent to the API, but the promptMessage to display in the MessagesSection
+        // Pass the full message and file name to be sent to the API, but the promptMessage to display in the MessagesSection
         onSendMessage({
           fullMessage: messageToSend,
           displayMessage: promptMessage,
+          fileName,
         });
         setUserInput(""); // Clear the input after sending
         setSelectedFiles([]); // Clear selected files

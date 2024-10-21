@@ -90,10 +90,13 @@ function App() {
   };
 
   const handleSendMessage = async (message) => {
-    const { fullMessage, displayMessage } = message;
+    const { fullMessage, displayMessage, fileName } = message;
 
-    // Add only the displayMessage (user's prompt) to the messages array
-    setMessages((prev) => [...prev, { role: "user", content: displayMessage }]);
+    // Add only the displayMessage (user's prompt) and file name to the messages array
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", content: displayMessage, fileName },
+    ]);
 
     // Send the full message (PDF + prompt) to the OpenAI API
     try {

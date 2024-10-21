@@ -66,28 +66,42 @@ function MessagesSection({
             >
               <div
                 ref={lastMessageRef}
-                aria-live="polite" // Announce new messages
-                className={`flex items-start p-3 prose ${
+                aria-live="polite"
+                className={`flex ${
+                  msg.role === "user"
+                    ? "flex-col items-end" // Align user message to the right, but file name to the left
+                    : "flex-row items-start" // Assistant messages use a row layout
+                } p-3 prose ${
                   msg.role === "user"
                     ? "max-w-full md:max-w-md rounded-2xl bg-gray-200 text-gray-800 not-prose"
                     : "max-w-full text-black"
                 }`}
               >
-                {/* Screen reader only h3 */}
                 <h3 id={`message-${index}-heading`} className="sr-only">
                   {msg.role === "user" ? "You said:" : "The assistant said:"}
                 </h3>
 
+                {/* Display file name aligned to the top left for user messages */}
+                {msg.role === "user" && msg.fileName && (
+                  <div className="text-sm text-gray-500 mb-2 self-start">
+                    {" "}
+                    {/* Use self-start to align to top-left */}
+                    <strong>Attached file:</strong> {msg.fileName}
+                  </div>
+                )}
+
+                {/* Display assistant's logo for assistant messages */}
                 {msg.role === "assistant" && (
                   <div aria-hidden className="flex-shrink-0 mr-3">
                     <img
                       /*src={harvardShield}*/
                       src="https://harvard-openai-assistants.s3.amazonaws.com/assets/Harvard_University_shield.svg"
                       alt="Harvard University shield"
-                      className="w-6 h-6 not-prose mt-6 object-contain"
+                      className="w-6 h-6 mt-6 object-contain"
                     />
                   </div>
                 )}
+
                 <div className="flex-grow max-w-full overflow-x-auto">
                   <ReactMarkdown
                     components={{
