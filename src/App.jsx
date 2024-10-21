@@ -6,7 +6,12 @@ import Header from "./Header";
 import FileUploadModal from "./FileUploadModal"; // Import the modal
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 
+// Set the workerSrc to be used for local development
 pdfjsLib.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf/pdf.worker.min.mjs`;
+
+// Manually set the workerSrc to point to the S3-hosted worker with cross-origin support
+// pdfjsLib.GlobalWorkerOptions.workerSrc =
+// "https://harvard-openai-assistants.s3.amazonaws.com/assets/pdf.worker.min.js";
 
 function App() {
   const [messages, setMessages] = useState([]);
