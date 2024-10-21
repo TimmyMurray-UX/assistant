@@ -79,32 +79,46 @@ const InputSection = forwardRef(
     };
 
     return (
-      <div className="p-4">
+      <div className="p-4" role="form" aria-label="Input Section">
         <div className="flex flex-col items-center max-w-3xl mx-auto relative w-full">
-          <div className="flex flex-col items-start w-full relative rounded-3xl shadow-sm bg-gray-100 text-black">
+          <div
+            className="flex flex-col items-start w-full relative rounded-3xl shadow-sm bg-gray-100 text-black"
+            aria-live="polite"
+          >
             {/* Display fileTexts in the <pre> tag */}
             {Object.values(fileTexts).length > 0 && (
-              <div className="p-2">
-                <pre className="w-full bg-gray-200 p-4 rounded-3xl mb-4 overflow-auto max-h-64 whitespace-pre-wrap">
+              <div className="p-2" aria-live="polite">
+                <pre
+                  className="w-full bg-gray-200 p-4 rounded-3xl mb-4 overflow-auto max-h-64 whitespace-pre-wrap"
+                  aria-label="PDF text preview"
+                  tabIndex="0" // Ensure that this content is focusable by keyboard if necessary
+                >
                   {Object.values(fileTexts).join("\n")}
                 </pre>
               </div>
             )}
 
             {selectedFiles.length > 0 && (
-              <div className="flex space-x-2 mb-2 overflow-x-auto p-2 w-full">
+              <div
+                className="flex space-x-2 mb-2 overflow-x-auto p-2 w-full"
+                aria-live="polite"
+              >
                 {selectedFiles.map((file, index) => (
                   <div
                     key={index}
                     className="flex items-center bg-gray-200 rounded px-2 py-1 text-sm text-gray-600"
                     style={{ wordBreak: "keep-all", whiteSpace: "nowrap" }}
+                    aria-label={`Selected file: ${file.name}`}
+                    tabIndex="0" // Make file item focusable for keyboard users
                   >
                     <span className="mr-2">{file.name}</span>
-                    <XCircleIcon
-                      className="h-4 w-4 text-red-500 cursor-pointer"
+                    <button
                       onClick={() => removeFile(file)}
-                      aria-label="Remove file"
-                    />
+                      className="focus:outline-none"
+                      aria-label={`Remove file ${file.name}`}
+                    >
+                      <XCircleIcon className="h-4 w-4 text-red-500 cursor-pointer" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -113,13 +127,17 @@ const InputSection = forwardRef(
             <div className="flex items-end space-x-2 bg-gray-100 rounded-full p-0 w-full">
               {/* Paperclip icon for attaching files */}
               <div className="flex items-center p-2">
-                <label
-                  htmlFor="file-upload"
-                  className="cursor-pointer"
+                <button
+                  className="focus:outline-none focus:ring-2 focus:ring-gray-400 p-1 rounded-full"
                   onClick={openModal}
+                  aria-label="Attach file"
+                  title="Attach file"
                 >
-                  <PaperClipIcon className="h-8 w-8 text-black hover:text-gray-400" />
-                </label>
+                  <PaperClipIcon
+                    className="h-8 w-8 text-black hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                </button>
               </div>
 
               {/* Textarea for user input */}
@@ -131,6 +149,7 @@ const InputSection = forwardRef(
                   onChange={handleInputChange}
                   placeholder="Type a message..."
                   rows={1}
+                  aria-label="Message input"
                 />
               </div>
 
@@ -156,15 +175,25 @@ const InputSection = forwardRef(
 
         {/* Footer section */}
         <footer className="p-4 text-center text-xs text-gray-500">
-          <a href="#" target="_blank" rel="noreferrer">
+          <a
+            href="#"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Digital Accessibility"
+          >
             Digital Accessibility
           </a>{" "}
           |{" "}
-          <a href="#" target="_blank" rel="noreferrer">
+          <a
+            href="#"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Privacy Policy"
+          >
             Privacy
           </a>{" "}
           |{" "}
-          <a href="#" target="_blank" rel="noreferrer">
+          <a href="#" target="_blank" rel="noreferrer" aria-label="Help">
             Help
           </a>
         </footer>
