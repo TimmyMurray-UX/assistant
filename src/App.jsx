@@ -51,7 +51,6 @@ function App() {
     }
 
     setLoading(true);
-    setMessages((prev) => [...prev, { role: "user", content: message }]);
 
     try {
       const response = await fetch("/send-message", {
@@ -61,22 +60,57 @@ function App() {
           "Agent-ID": agentId,
         },
         body: JSON.stringify({
-          message,
+          message, // sending fullMessage to the backend, but not using it in messages state
           threadId,
         }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: data.result },
-        ]);
+      if (!response.ok) {
+        console.error(
+          "Error: Non-200 status code",
+          response.status,
+          response.statusText
+        );
+        return null; // Return null in case of non-OK response
       }
+
+      const data = await response.json();
+
+      if (!data || !data.result) {
+        console.error("Error: Invalid response from API", data);
+        return null;
+      }
+
+      return data; // Return the data to the handleSendMessage function
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("Error sending message to API:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSendMessage = async (message) => {
+    const { fullMessage, displayMessage } = message;
+
+    // Add only the displayMessage (user's prompt) to the messages array
+    setMessages((prev) => [...prev, { role: "user", content: displayMessage }]);
+
+    // Send the full message (PDF + prompt) to the OpenAI API
+    try {
+      const response = await sendMessage(fullMessage); // Sending the full message to API
+
+      if (!response) {
+        console.error("No valid response from API");
+        return; // Exit if there was an error
+      }
+
+      // Add the assistant's response to the message list
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.result },
+      ]);
+    } catch (error) {
+      console.error("Error processing API response:", error);
     }
   };
 
@@ -146,7 +180,7 @@ function App() {
         <InputSection
           ref={inputSectionRef}
           fileInputRef={fileInputRef} // Pass file input ref to InputSection
-          onSendMessage={sendMessage}
+          onSendMessage={handleSendMessage} // Use the modified handler here
           extractTextFromPDF={extractTextFromPDF}
           fileTexts={fileTexts}
           setFileTexts={setFileTexts} // Pass setFileTexts to InputSection
