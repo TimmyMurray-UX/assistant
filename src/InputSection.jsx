@@ -62,9 +62,10 @@ const InputSection = forwardRef(
           fileName,
           fileContent: combinedFileText,
         });
+
         setUserInput(""); // Clear the input after sending
         setSelectedFiles([]); // Clear selected files
-        setFileTexts({}); // Clear the fileTexts in <pre> tags
+        setFileTexts({}); // Clear the fileTexts in <pre> tags after the message is sent
       }
     };
 
@@ -91,11 +92,18 @@ const InputSection = forwardRef(
 
     // Define the handleFileUpload function to handle file uploads from the modal
     const handleFileUpload = (files) => {
-      setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+      // Convert files (FileList) to an array
+      const filesArray = Array.from(files);
+
+      setSelectedFiles((prevFiles) => [...prevFiles, ...filesArray]); // Add the files to selectedFiles
       setIsModalOpen(false); // Close the modal after file upload
       textareaRef.current?.focus(); // Move focus to input box after modal closes
-    };
 
+      // Trigger the PDF parsing for each file
+      filesArray.forEach((file) => {
+        extractTextFromPDF(file); // Parse the file and update fileTexts
+      });
+    };
     // Automatically move focus to the input box when the <pre> tag (fileTexts) is not empty
     useEffect(() => {
       if (Object.values(fileTexts).length > 0 && textareaRef.current) {
