@@ -73,14 +73,13 @@ function MessagesSection({
             >
               <div aria-hidden className="flex-shrink-0 mr-3">
                 <img
-                  /*src={harvardShield}*/
                   src="https://harvard-openai-assistants.s3.amazonaws.com/assets/Harvard_University_shield.svg"
                   alt="Harvard University shield"
                   className="w-6 h-6 mt-6 not-prose object-contain"
                 />
               </div>
               <div className="p-3 max-w-full mt-3 text-gray-500">
-                Assistant is typing...
+                Assistant is typing<span className="typing-dots"></span>
               </div>
             </div>
           )}
